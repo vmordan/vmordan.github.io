@@ -1,0 +1,169 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import type { CollectionEntry } from "astro:content";
+
+type Props = CollectionEntry<"talk">["data"];
+
+const {
+  title,
+  tagline,
+  link,
+  src,
+  venue,
+  date,
+} = Astro.props as Props;
+
+const pdfLabel = "PDF";
+
+const isDoiLike = (l?: string) => Boolean(l && (l.includes("doi.org") || l.startsWith("10.")));
+const linkLabel = isDoiLike(link) ? "DOI" : "Link";
+
+// Normalize DOI if user stored bare "10.xxxx/yyy"
+const externalLink = link?.startsWith("10.") ? `https://doi.org/${link}` : link;
+
+const hasPdf = Boolean(src);
+
+const formatDate = (iso?: string) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "2-digit" });
+};
+
+const metaParts = [venue, formatDate(date)].filter(Boolean);
+---
+
+<PageLayout title={title} description={tagline}>
+  <section class="panel">
+    <div class="pub">
+      <div class="pub__head">
+        <h1 class="pub__title">{title}</h1>
+      </div>
+
+      <p class="pub__tagline">{tagline}</p>
+
+      {metaParts.length ? (
+        <div class="pub__meta">
+          {metaParts.map((m) => (
+            <span class="meta-pill">{m}</span>
+          ))}
+        </div>
+      ) : null}
+
+      <div class="pub__links">
+        {externalLink && (
+          <a class="btn btn--ghost" href={externalLink} target="_blank" rel="noreferrer">
+            {linkLabel}
+          </a>
+        )}
+
+        {hasPdf && (
+          <a class="btn btn--ghost" href={src} target="_blank" rel="noreferrer">
+            {pdfLabel}
+          </a>
+        )}
+
+      </div>
+
+      <div class="pub-abstract">
+        <slot />
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .pub__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pub__title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+
+    .pub__tagline {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #475569;
+    }
+
+    .pub__meta {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .meta-pill {
+      font-size: 12px;
+      color: #475569;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      padding: 4px 8px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .pub__links {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pub__video {
+      margin-top: 16px;
+    }
+
+    .embed {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      box-shadow: var(--shadow);
+    }
+
+    .embed__frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      display: block;
+    }
+
+    /* Talk abstract (same style as publications) */
+    .pub-abstract {
+      margin-top: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      border-left: 2px solid color-mix(in srgb, currentColor 16%, transparent);
+      background: color-mix(in srgb, currentColor 4%, transparent);
+      border-radius: 0.75rem;
+
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: color-mix(in srgb, currentColor 82%, transparent);
+    }
+
+    .pub-abstract :where(p) {
+      margin: 0;
+    }
+
+    .pub-abstract :where(p + p) {
+      margin-top: 0.6rem;
+    }
+
+    .pub-abstract--clamp {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 5;
+      overflow: hidden;
+    }
+  </style>
+</PageLayout>

@@ -1,0 +1,197 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { getCollection } from "astro:content";
+import { FULL_NAME } from '../../config/profile';
+
+const talksRaw = await getCollection("talk");
+
+// Sort: date desc (if present), then order asc (if present), then title
+const talks = talksRaw
+  .filter(p => !p.data.hide)
+  .slice()
+  .sort((a, b) => {
+    const ad = a.data.date ? Date.parse(a.data.date) : -Infinity;
+    const bd = b.data.date ? Date.parse(b.data.date) : -Infinity;
+    if (ad !== bd) return bd - ad;
+
+    const ao = a.data.order ?? 1_000_000;
+    const bo = b.data.order ?? 1_000_000;
+    if (ao !== bo) return ao - bo;
+
+    return a.data.title.localeCompare(b.data.title);
+  });
+
+const isDoiLike = (link: string) => link.startsWith("10.");
+const normalizeLink = (link: string) => (isDoiLike(link) ? `https://doi.org/${link}` : link);
+
+const formatDate = (iso?: string) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return iso; // fallback if not a real ISO
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "2-digit" });
+};
+---
+
+<PageLayout
+  title=`Talks - ${FULL_NAME}`
+  description="Selected talks and related materials (PDFs, links, videos)."
+>
+  <section class="panel">
+    <div class="row">
+      <h1 class="panel__title">Talks</h1>
+      <span class="row__hint">{talks.length} items</span>
+    </div>
+
+    <div class="pub-grid">
+      {talks.map((t) => {
+        const link = t.data.link ? normalizeLink(t.data.link) : "";
+        const hasPdf = Boolean(t.data.src);
+
+        const dateText = formatDate(t.data.date);
+        const venueText = t.data.venue ?? "";
+
+        return (
+          <article class="pub-card">
+            <div class="pub-card__top">
+              <div class="pub-card__titlewrap">
+                <a class="pub-card__title" href={`/talk/${t.id}`}>
+                  {t.data.title}
+                </a>
+
+                <div class="pub-card__badges">
+                  {hasPdf && <span class="tag tag--soft">PDF</span>}
+                </div>
+              </div>
+
+              {(venueText || dateText) && (
+                <div class="pub-card__meta">
+                  {venueText && <span class="meta-pill">{venueText}</span>}
+                  {dateText && <span class="meta-pill">{dateText}</span>}
+                </div>
+              )}
+
+              <p class="pub-card__tagline">{t.data.tagline}</p>
+            </div>
+
+            <div class="pub-card__actions">
+              <a class="btn btn--ghost" href={`/talk/${t.id}`}>
+                Details
+              </a>
+
+              {link && (
+                <a class="btn btn--ghost" href={link} target="_blank" rel="noreferrer">
+                  {isDoiLike(t.data.link ?? "") || link.includes("doi.org") ? "DOI" : "Link"}
+                </a>
+              )}
+
+              {hasPdf && (
+                <a class="btn btn--ghost" href={t.data.src} target="_blank" rel="noreferrer">
+                  PDF
+                </a>
+              )}
+
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <style>
+    .row__hint {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .pub-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .pub-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .pub-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+    }
+
+    .pub-card:hover {
+      transform: translateY(-1px);
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .pub-card__titlewrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pub-card__title {
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 800;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .pub-card__title:hover {
+      text-decoration: underline;
+      text-decoration-color: rgba(47, 111, 237, 0.45);
+    }
+
+    .pub-card__badges {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .tag--soft {
+      background: var(--soft);
+    }
+
+    .pub-card__meta {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .meta-pill {
+      font-size: 12px;
+      color: #475569;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 999px;
+      padding: 4px 8px;
+      line-height: 1.2;
+    }
+
+    .pub-card__tagline {
+      margin: 8px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #475569;
+    }
+
+    .pub-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  </style>
+</PageLayout>

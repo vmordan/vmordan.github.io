@@ -1,0 +1,631 @@
+---
+import { Image } from "astro:assets";
+import { FULL_NAME, EMAIL, LOCATION, TAGLINE, GITHUB, GOOGLE_SCHOLAR, ORCID, LINKEDIN, CHIPS, AVATAR } from '../config/profile';
+import linkedInIcon from "../assets/icons/linkedin.svg";
+import orcidIcon from "../assets/icons/orcid.svg";
+import emailIcon from "../assets/icons/email.svg";
+import githubIcon from "../assets/icons/github.svg";
+import googleScholarIcon from "../assets/icons/google_scholar.svg";
+
+const profile = {
+  name: FULL_NAME,
+  tagline: TAGLINE,
+  location: LOCATION,
+  intro: "",
+  contacts: [
+    {
+      type: "email",
+      label: "Email",
+      value: EMAIL,
+      href: `mailto:${EMAIL}`,
+    },
+    {
+      type: "github",
+      label: "GitHub",
+      href: GITHUB,
+    },
+    {
+      type: "scholar",
+      label: "Google Scholar",
+      href: GOOGLE_SCHOLAR,
+    },
+    {
+      type: "orcid",
+      label: "ORCID",
+      href: ORCID,
+    },
+    {
+      type: "linkedin",
+      label: "LinkedIn",
+      href: LINKEDIN,
+    },
+  ],
+  chips: CHIPS,
+  photoAlt: `avatar`,
+  ctas: [
+    { label: "Publications", href: "/publication" },
+    { label: "Projects", href: "/project" },
+    { label: "About", href: "/about" },
+  ],
+};
+---
+
+<aside class="panel panel--aside">
+  <header class="side-hero">
+    {AVATAR && (
+      <div class="avatar">
+        <Image src={AVATAR} alt={profile.photoAlt} class="avatar__img" width={256} height={256} />
+      </div>
+    )}
+
+    <div class="side-hero__text">
+      <h1 class="side-hero__title">{profile.name}</h1>
+
+      {(profile.tagline || profile.location) && (
+        <p class="side-hero__subtitle">
+          {profile.tagline}
+          {profile.tagline && profile.location && <span class="side-hero__dot">•</span>}
+          {profile.location && <span class="side-hero__meta">{profile.location}</span>}
+        </p>
+      )}
+
+      {profile.intro && <p class="side-hero__intro">{profile.intro}</p>}
+
+      {profile.chips?.length > 0 && (
+        <div class="chips chips--compact" aria-label="Focus">
+          {profile.chips.map((c) => (
+            <span class="chip chip--compact">{c}</span>
+          ))}
+        </div>
+      )}
+    </div>
+  </header>
+
+  <!-- INFO -->
+  <div class="panel__head">
+    <div>
+      <h2 class="panel__title">Useful links</h2>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="mini">
+      <div class="mini__label">Links</div>
+      <ul class="contact-list">
+        {profile.contacts.map((c) => ( c.href &&
+          <li>
+            <a class="contact-link" href={c.href} target="_blank" rel="noreferrer">
+              <span class="contact-icon">
+                {c.type === "email" && (
+                  <Image src={emailIcon} alt="Instagram" class="icon" loading="eager" />
+                )}
+                {c.type === "github" && (
+                  <Image src={githubIcon} alt="Instagram" class="icon" loading="eager" />
+                )}
+                {c.type === "scholar" && (
+                  <Image src={googleScholarIcon} alt="Instagram" class="icon" loading="eager" />
+                )}
+                {c.type === "orcid" && (
+                  <Image src={orcidIcon} alt="Instagram" class="icon" loading="eager" />
+                )}
+                {c.type === "linkedin" && (
+                  <Image src={linkedInIcon} alt="Instagram" class="icon" loading="eager" />
+                )}
+              </span>
+              <span class="contact-label">{c.label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+    </div>
+
+  </div>
+
+  <div class="cta">
+    {profile.ctas.map((b) => (
+      <a class="btn btn--ghost" href={b.href}>{b.label}</a>
+    ))}
+  </div>
+</aside>
+
+<style>
+  /* Component-only additions (everything else comes from your page CSS) */
+:global(:root) {
+  /* Quick theming knobs */
+  --bg: #ffffff;
+  --fg: #0f172a;
+  --muted: #475569;
+  --border: #e2e8f0;
+  --soft: #f8fafc;
+  --shadow: 1 2px 10px rgba(15, 23, 42, 0.06);
+  --radius: 18px;
+  --accent: #2f6fed;
+
+  /* Layout knobs */
+  --page-w: 90%;     /* desktop max container */
+  --mobile-w: 420px;    /* cap width on mobile/tablet */
+  --aside-w: 320px;     /* sidebar width on desktop */
+  --gap: 16px;
+}
+
+.page {
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 16px 48px;
+  color: var(--fg);
+}
+
+  .hero {
+    margin-bottom: 18px;
+	width: 100%;
+  }
+  .hero__title {
+    margin: 0;
+    font-size: clamp(28px, 4vw, 44px);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .hero__subtitle {
+    margin: 8px 0 0;
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  .hero__dot {
+    margin: 0 8px;
+    opacity: 0.5;
+  }
+  .hero__meta {
+    color: #64748b;
+  }
+
+/* Main 2-grid layout */
+.layout {
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: 1fr; /* mobile: stacked */
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .layout {
+    /* Key fix: minmax(0,1fr) makes the 2nd column truly fluid */
+    grid-template-columns: var(--aside-w) minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .panel--aside {
+    width: var(--aside-w); /* ensures no shrinking weirdness */
+    position: sticky;
+    top: 18px;
+  }
+
+  /* Optional: prevent long content from forcing overflow */
+  .main {
+    min-width: 0;
+  }
+}
+
+
+/* On smaller screens, center content and cap width for readability */
+@media (max-width: 900px) {
+  .page {
+    max-width: var(--mobile-w);
+  }
+}
+
+/* On desktop, use full available width but don’t exceed page-w */
+@media (min-width: 901px) {
+  .page {
+    max-width: var(--page-w);
+  }
+}
+
+  .panel {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  .panel__head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .panel__title {
+    margin: 0;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: #0b1220;
+  }
+  .panel__hint {
+    margin: 6px 0 0;
+    font-size: 12px;
+    color: #64748b;
+  }
+
+  .stack {
+    margin-top: 14px;
+    display: grid;
+    gap: 12px;
+  }
+
+  .mini {
+    border: 1px solid var(--border);
+    background: var(--soft);
+    border-radius: 14px;
+    padding: 12px;
+  }
+  .mini__label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+  }
+  .mini__value {
+    display: inline-block;
+    margin-top: 6px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .mini__value:hover {
+    text-decoration: underline;
+    text-decoration-color: rgba(47, 111, 237, 0.5);
+  }
+  .mini__text {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: #334155;
+    line-height: 1.45;
+  }
+
+  .links {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    display: grid;
+    gap: 10px;
+  }
+  .links__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: baseline;
+  }
+  .links__a {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .links__a:hover {
+    text-decoration: underline;
+    text-decoration-color: rgba(47, 111, 237, 0.5);
+  }
+  .links__note {
+    font-size: 12px;
+    color: #64748b;
+    white-space: nowrap;
+  }
+
+  .cta {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    background: #fff;
+  }
+  .btn--ghost:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+
+  .main {
+    display: grid;
+    gap: var(--gap);
+  }
+
+  .chips {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chip {
+    background: #f1f5f9;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .row__link {
+    font-size: 12px;
+    color: #64748b;
+    text-decoration: none;
+  }
+  .row__link:hover {
+    text-decoration: underline;
+    text-decoration-color: rgba(47, 111, 237, 0.5);
+  }
+
+  .cards {
+    margin-top: 14px;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 14px;
+    background: #fff;
+    transition: transform 120ms ease, background 120ms ease, border-color 120ms ease;
+  }
+  .card:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+  .card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .card__title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .card__arrow {
+    color: #94a3b8;
+  }
+  .card__desc {
+    margin: 8px 0 0;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.45;
+  }
+
+  .tags {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 11px;
+    color: #64748b;
+    background: #fff;
+  }
+
+  .text {
+    margin: 10px 0 0;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .photos {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  @media (min-width: 640px) {
+    .photos {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+  }
+  .photo {
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--soft);
+  }
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--fg);
+}
+
+.contact-icon {
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+  display: inline-flex;
+}
+
+.contact-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.contact-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.contact-label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.contact-value {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.contact-link:hover .contact-icon {
+  color: var(--accent);
+}
+
+.contact-link:hover .contact-label {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+  .side-hero {
+    grid-template-columns: auto 1fr;
+    gap: 12px;
+    align-items: start;
+    margin-bottom: 14px;
+  }
+
+/* Avatar wrapper: controls positioning & spacing */
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 14px;        /* center + space below */
+  width: 256px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;        /* guarantees square */
+
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--soft);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  
+}
+
+/* Image itself */
+.avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tablet / small desktop */
+@media (max-width: 900px) {
+  .avatar {
+    width: 200px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .avatar {
+    width: 140px;
+    margin-bottom: 10px;
+    border-radius: 16px;
+  }
+}
+
+
+  .side-hero__title {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .side-hero__subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+
+  .side-hero__dot {
+    margin: 0 6px;
+    opacity: 0.5;
+  }
+
+  .side-hero__meta {
+    color: #64748b;
+  }
+
+  .side-hero__intro {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #334155;
+  }
+
+  .chips--compact {
+    margin-top: 10px;
+    gap: 6px;
+  }
+
+  .chip--compact {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  @media (max-width: 420px) {
+    .side-hero {
+      grid-template-columns: 1fr;
+    }
+    .avatar {
+      width: 64px;
+      height: 64px;
+    }
+  }
+</style>

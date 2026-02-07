@@ -1,0 +1,25 @@
+---
+import { Image } from 'astro:assets';
+
+const { hideOnMobile = false } = Astro.props;
+
+
+---
+
+<style>
+    .social-links {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+	}
+    .social-links a {
+		display: flex;
+	}
+
+    @media (max-width: 700px) {
+        .hide-mobile {
+            display: none;
+        }
+    }
+
+</style>

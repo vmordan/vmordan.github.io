@@ -1,0 +1,167 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { getCollection } from "astro:content";
+import { FULL_NAME } from '../config/profile';
+import { HOME_PAGE_INTRO, HOME_PAGE_OUTSIDE_WORK, HOME_PAGE_OUTSIDE_WORK_CHIPS } from '../config/site';
+
+function takeTwoNewest(items) {
+  return [...items].sort((a, b) => {
+    const ao = a.data.order ?? 1_000_000;
+    const bo = b.data.order ?? 1_000_000;
+    if (ao !== bo) return bo - ao;
+    return a.data.title.localeCompare(b.data.title);
+  }).slice(0, 2);
+}
+
+// Collections: rename if yours differ.
+const publications = await getCollection("publication");
+const talks = await getCollection("talk");
+const projects = await getCollection("project");
+
+// Pick 2 newest
+const pub2 = takeTwoNewest(publications);
+const talk2 = takeTwoNewest(talks);
+const proj2 = takeTwoNewest(projects);
+
+// Map items to a common card shape.
+// IMPORTANT: update href logic to match your routes.
+// If you have a slug in frontmatter: `/publications/${entry.slug}` etc.
+function toCards(entries, basePath) {
+  return entries.map((e) => ({
+    href: `${basePath}/${e.slug ?? e.id}`, // adjust if needed
+    title: e.data.title,
+    desc: e.data.tagline ?? e.data.description ?? "",
+    tags: e.data.tags ?? [],
+    meta:
+      e.data.venue ??
+      e.data.event ??
+      e.data.year ??
+      e.data.date ??
+      "",
+  }));
+}
+
+const pubCards = toCards(pub2, "/publication");
+const talkCards = toCards(talk2, "/talk");
+const projCards = toCards(proj2, "/project");
+---
+
+<PageLayout
+  title=`${FULL_NAME}`
+  description=`Personal site of ${FULL_NAME}`
+>
+  {/* Optional one-liner positioning line (not a bio) */}
+  <section class="hero">
+    {HOME_PAGE_INTRO.map(p => <p class="hero__line">{p}</p>)}
+  </section>
+  <section class="grid">
+    <section class="panel">
+      <div class="row">
+        <h2 class="panel__title">Selected publications</h2>
+        <a class="row__link" href="/publication">View all</a>
+      </div>
+
+      <div class="cards">
+        {pubCards.map((h) => (
+          <a class="card" href={h.href}>
+            <div class="card__top">
+              <h3 class="card__title">{h.title}</h3>
+              <span class="card__arrow">→</span>
+            </div>
+            {h.meta && <div class="card__meta">{h.meta}</div>}
+            {h.desc && <p class="card__desc">{h.desc}</p>}
+            {h.tags?.length ? (
+              <div class="tags">
+                {h.tags.slice(0, 4).map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </div>
+            ) : null}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- <section class="panel">
+      <div class="row">
+        <h2 class="panel__title">Selected talks</h2>
+        <a class="row__link" href="/talk">View all</a>
+      </div>
+
+      <div class="cards">
+        {talkCards.map((h) => (
+          <a class="card" href={h.href}>
+            <div class="card__top">
+              <h3 class="card__title">{h.title}</h3>
+              <span class="card__arrow">→</span>
+            </div>
+            {h.meta && <div class="card__meta">{h.meta}</div>}
+            {h.desc && <p class="card__desc">{h.desc}</p>}
+            {h.tags?.length ? (
+              <div class="tags">
+                {h.tags.slice(0, 4).map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </div>
+            ) : null}
+          </a>
+        ))}
+      </div>
+    </section>-->
+
+    <section class="panel">
+      <div class="row">
+        <h2 class="panel__title">Selected projects</h2>
+        <a class="row__link" href="/project">View all</a>
+      </div>
+
+      <div class="cards">
+        {projCards.map((h) => (
+          <a class="card" href={h.href}>
+            <div class="card__top">
+              <h3 class="card__title">{h.title}</h3>
+              <span class="card__arrow">→</span>
+            </div>
+            {h.desc && <p class="card__desc">{h.desc}</p>}
+            {h.tags?.length ? (
+              <div class="tags">
+                {h.tags.slice(0, 4).map((t) => (
+                  <span class="tag">{t}</span>
+                ))}
+              </div>
+            ) : null}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="panel panel--travel">
+      <div class="row">
+        <h2 class="panel__title">Outside work</h2>
+      </div>
+
+      {HOME_PAGE_OUTSIDE_WORK.map(p => <p class="text">{p}</p>)}
+
+      <div class="tags">
+        {HOME_PAGE_OUTSIDE_WORK_CHIPS.map(p => <span class="tag">{p}</span>)}
+      </div>
+    </section>
+  </section>
+</PageLayout>
+
+<style>
+  .hero {
+    margin: 0.5rem 0 1rem;
+  }
+  .hero__line {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    opacity: 0.9;
+  }
+  .grid {
+    display: grid;
+    row-gap: 12px;
+  }
+
+</style>

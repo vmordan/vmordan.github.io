@@ -1,0 +1,224 @@
+---
+import PageLayout from "../../layouts/PageLayout.astro";
+import { getCollection } from "astro:content";
+import { FULL_NAME } from '../../config/profile';
+
+const projectsRaw = await getCollection("project");
+
+// Sort: order asc (if present), then title
+const projects = projectsRaw
+  .filter(p => !p.data.hide)
+  .slice()
+  .sort((a, b) => {
+    const ao = a.data.order ?? 1_000_000;
+    const bo = b.data.order ?? 1_000_000;
+    if (ao !== bo) return bo - ao;
+
+    return a.data.title.localeCompare(b.data.title);
+  });
+
+const isCodeHost = (l?: string) =>
+  Boolean(l && (l.includes("github.com") || l.includes("gitlab.com") || l.includes("codeberg.org")));
+
+const linkLabel = (l?: string) => (isCodeHost(l) ? "Code" : "Link");
+---
+
+<PageLayout
+  title=`Projects - ${FULL_NAME}`
+  description="Tools and contributions (selected projects with links to repositories and materials)."
+>
+  <section class="panel">
+    <div class="row">
+      <h1 class="panel__title">Projects</h1>
+      <span class="row__hint">{projects.length} items</span>
+    </div>
+
+    <div class="pub-grid">
+      {projects.map((p) => {
+        const ext = p.data.link;
+        
+        return (
+          <article class="pub-card">
+            <div class="pub-card__top">
+              <div class="pub-card__titlewrap">
+                <a class="pub-card__title" href={`/project/${p.id}`}>
+                  {p.data.title}
+                </a>
+              </div>
+
+              {p.data.role || p.data.status ? (
+                <div class="pub-card__badgesRow">
+                  {p.data.role && <span class="role-badge">{p.data.role}</span>}
+                  {p.data.status && (
+                    <span class={`status-badge status-badge--${p.data.status.toLowerCase()}`}>
+                      {p.data.status}
+                    </span>
+                  )}
+                </div>
+              ) : null}
+
+
+              <p class="pub-card__tagline">{p.data.desc}</p>
+            </div>
+
+            <div class="pub-card__actions">
+              <a class="btn btn--ghost" href={`/project/${p.id}`}>
+                Details
+              </a>
+
+              {ext && (
+                <a class="btn btn--ghost" href={ext} target="_blank" rel="noreferrer">
+                  {linkLabel(ext)}
+                </a>
+              )}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  </section>
+
+  <style>
+    .row__hint {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .pub-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .pub-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .pub-card {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+    }
+
+    .pub-card:hover {
+      transform: translateY(-1px);
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .pub-card__titlewrap {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .pub-card__title {
+      text-decoration: none;
+      color: var(--fg);
+      font-weight: 800;
+      font-size: 14px;
+      line-height: 1.25;
+    }
+
+    .pub-card__title:hover {
+      text-decoration: underline;
+      text-decoration-color: rgba(47, 111, 237, 0.45);
+    }
+
+    /* Role badge: slightly larger / more prominent than meta-pill */
+    .pub-card__role {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .role-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: color-mix(in srgb, currentColor 88%, transparent);
+      background: color-mix(in srgb, currentColor 6%, transparent);
+      border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+      border-radius: 999px;
+      padding: 6px 10px;
+      line-height: 1.2;
+      white-space: normal; /* allow wrap for long role text */
+      max-width: 100%;
+    }
+
+    .pub-card__tagline {
+      margin: 8px 0 0;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #475569;
+    }
+
+    .pub-card__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pub-card__badgesRow {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Same role-badge + status-badge as details page */
+    .role-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: color-mix(in srgb, currentColor 88%, transparent);
+      background: color-mix(in srgb, currentColor 6%, transparent);
+      border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+      border-radius: 999px;
+      padding: 6px 10px;
+      line-height: 1.2;
+      white-space: normal;
+      max-width: 100%;
+    }
+
+    .status-badge {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      border-radius: 999px;
+      padding: 5px 9px;
+      line-height: 1.2;
+      border: 1px solid #e2e8f0;
+      background: #f1f5f9;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .status-badge--active {
+      background: color-mix(in srgb, currentColor 6%, transparent);
+      border-color: color-mix(in srgb, currentColor 14%, transparent);
+    }
+
+    .status-badge--finished {
+      background: #d7d7d7;
+      border-color: #e2e8f0;
+      color: #334155;
+    }
+
+    .status-badge--archived {
+      background: #f7bab2;
+      border-color: #e2e8f0;
+      color: #3d4754;
+    }
+
+  </style>
+</PageLayout>

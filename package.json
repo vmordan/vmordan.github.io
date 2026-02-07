@@ -1,0 +1,25 @@
+{
+  "name": "nwt",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.12",
+    "@astrojs/rss": "^4.0.14",
+    "@astrojs/sitemap": "^3.6.1",
+    "@astrojs/svelte": "^7.2.3",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.4",
+    "sharp": "^0.34.3",
+    "svelte": "^5.45.8",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.21"
+  }
+}

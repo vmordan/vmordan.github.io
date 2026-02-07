@@ -1,0 +1,320 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import { Image } from "astro:assets";
+import { FULL_NAME } from '../config/profile';
+import { ABOUT_BIO } from '../config/site';
+
+
+const photoModules = import.meta.glob(
+  "../assets/photos/*.{jpg,jpeg,JPG,JPEG}",
+  { eager: true }
+);
+
+
+const photos = Object.entries(photoModules)
+  .map(([path, mod]) => {
+    const raw = path.split("/").pop() ?? "";
+
+    // Match: <num>_<name>.jpg
+    // 1 = numeric prefix (optional)
+    // 2 = name part
+    const match = raw.match(/^(\d+)_([^.]*)\.(jpg|jpeg)$/i);
+
+    const order = match ? Number(match[1]) : Number.POSITIVE_INFINITY;
+    const name = match ? match[2] : raw.replace(/\.(jpg|jpeg)$/i, "");
+
+    const caption = name
+      .replace(/[-_]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+
+    return {
+      src: mod.default,
+      alt: caption,
+      caption,
+      order,
+    };
+  })
+  // Sort ONLY by numeric prefix
+  .sort((a, b) => a.order - b.order);
+
+
+---
+
+<PageLayout
+  title=`About - ${FULL_NAME}`
+  description="Short bio, interests, and a small photo gallery."
+>
+  <section class="panel">
+    <h2 class="panel__title">About</h2>
+
+    <div class="about">
+      <div class="about__text">
+        {ABOUT_BIO.map(p => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="panel itineraries">
+    <div class="row">
+      <h2 class="panel__title">Photo gallery</h2>
+      <span class="row__hint">A small selection</span>
+    </div>
+
+    <div class="itinerary-grid">
+      {photos.map((p, i) => (
+        <button
+          class="itinerary-card"
+          type="button"
+          data-src={p.src.src ?? p.src}
+          data-alt={p.alt}
+          aria-label={`Open image ${p.alt}`}
+        >
+          <div class="card-media">
+            <Image
+              src={p.src}
+              alt={p.alt}
+              class="card-img"
+              width={520}
+              height={390}
+              sizes="(max-width: 420px) 92vw, (max-width: 900px) 420px, 260px"
+              format="webp"
+              quality={72}
+              placeholder="blur"
+              loading={i < 2 ? "eager" : "lazy"}
+              decoding="async"
+            />
+          </div>
+
+          <!-- <div class="card-body">
+            <div class="card-title">{p.caption}</div>
+          </div>-->
+        </button>
+      ))}
+    </div>
+  </section>
+
+
+
+<script>
+  const lightbox = document.getElementById("lightbox");
+  const img = document.getElementById("lightbox-img");
+  const caption = document.getElementById("lightbox-caption");
+
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".itinerary-card");
+    if (!card) return;
+
+    const src = card.dataset.src;
+    const alt = card.dataset.alt || "";
+
+    img.src = src;
+    img.alt = alt;
+    caption.textContent = alt;
+
+    lightbox.removeAttribute("hidden");
+    document.body.style.overflow = "hidden";
+  });
+
+  const close = () => {
+    lightbox.setAttribute("hidden", "");
+    img.src = "";
+    document.body.style.overflow = "";
+  };
+
+  lightbox.addEventListener("click", close);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+</script>
+
+
+  <style>
+    /* About layout */
+    .about {
+      margin-top: 12px;
+      gap: 16px;
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+
+    .lead {
+      margin: 0 0 10px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #334155;
+    }
+
+    .about__text p {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #475569;
+    }
+
+    .about__actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Optional featured image block */
+    .featured {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--soft);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .featured__placeholder {
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(180deg, #ffffff, #f1f5f9);
+    }
+
+    @media (min-width: 900px) {
+      .about {
+        grid-template-columns: 1.3fr 0.7fr;
+      }
+    }
+
+    /* Gallery: NWT-style grid, aligned with your tokens */
+    .itineraries {
+      margin-top: 0; /* panel already provides spacing via PageLayout */
+    }
+
+    .row__hint {
+      font-size: 12px;
+      color: #64748b;
+    }
+
+    .itinerary-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .itinerary-card {
+      display: flex;
+      flex-direction: column;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      background: #fff;
+      box-shadow: var(--shadow);
+      content-visibility: auto;
+      transition: transform 120ms ease, border-color 120ms ease, background 120ms ease;
+      contain-intrinsic-size: 360px 300px; /* placeholder size to reduce layout work */
+
+    }
+
+    .itinerary-card:hover {
+      transform: translateY(-1px);
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+
+    .card-media {
+      background: var(--soft);
+      border-bottom: 1px solid var(--border);
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-placeholder {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(180deg, #ffffff, #f1f5f9);
+    }
+
+    .card-body {
+      padding: 12px 12px 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.35;
+    }
+
+    /* Make cards feel good on small screens */
+    @media (max-width: 420px) {
+      .itinerary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Lightbox overlay */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.lightbox__content {
+  position: relative;
+  max-width: min(92vw, 1200px);
+  max-height: 92vh;
+  margin: 0;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+}
+
+.lightbox__content img {
+  max-width: 100%;
+  max-height: 85vh;
+  object-fit: contain;
+  border-radius: 14px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  background: #000;
+}
+
+.lightbox__content figcaption {
+  text-align: center;
+  font-size: 13px;
+  color: #e5e7eb;
+}
+.lightbox[hidden] {
+  display: none !important;
+}
+
+
+  </style>
+
+
+<div id="lightbox" class="lightbox" hidden>
+  <div class="lightbox__backdrop"></div>
+
+  <figure class="lightbox__content">
+    <img id="lightbox-img" alt="" />
+    <figcaption id="lightbox-caption"></figcaption>
+  </figure>
+</div>
+</PageLayout>

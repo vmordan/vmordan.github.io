@@ -1,0 +1,96 @@
+---
+import SocialLinks from "./SocialLinks.astro";
+import { FULL_NAME, EMAIL } from '../config/profile';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p class="footer-copy">
+      © {year} {FULL_NAME}
+    </p>
+
+    <nav class="footer-nav" aria-label="Footer">
+      <a href="/about">About</a>
+      <a href="/project">Projects</a>
+      <a href="/publication">Publications</a>
+      <a href={`mailto:${EMAIL}`}>Contact</a>
+    </nav>
+
+    <div class="footer-social">
+      <SocialLinks />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 32px;
+    padding: 18px 16px;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(180deg, transparent, var(--soft));
+    color: #475569;
+    font-size: 13px;
+  }
+
+  .footer-inner {
+    max-width: var(--page-w);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .footer-copy {
+    margin: 0;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* Navigation links */
+  .footer-nav {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .footer-nav a {
+    color: #475569;
+    text-decoration: none;
+    padding: 6px 8px;
+    border-radius: 999px;
+    transition: background 120ms ease, color 120ms ease;
+  }
+
+  .footer-nav a:hover {
+    background: #f1f5f9;
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  /* Socials */
+  .footer-social {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* Mobile */
+  @media (max-width: 700px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .footer-nav {
+      justify-content: center;
+    }
+
+    .footer-social {
+      justify-content: center;
+    }
+  }
+</style>

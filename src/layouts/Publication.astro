@@ -1,0 +1,220 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import type { CollectionEntry } from "astro:content";
+import { PUB_NAME } from '../config/profile';
+
+type Props = CollectionEntry<"publication">["data"];
+
+const { title, tagline, link, src, videoId, artifactLink, authors } = Astro.props as Props;
+
+const pdfLabel = "PDF";
+const doiLabel = link?.includes("doi.org") || link?.startsWith("10.") ? "DOI" : "Link";
+
+// Normalize DOI if user stored bare "10.xxxx/yyy"
+const externalLink =
+  link?.startsWith("10.") ? `https://doi.org/${link}` : link;
+
+const hasPdf = Boolean(src);
+const hasVideo = Boolean(videoId);
+const hasArtifact = Boolean(artifactLink);
+---
+
+<PageLayout title={title} description={tagline}>
+  <section class="panel">
+    <div class="pub">
+      <div class="pub__head">
+        <h1 class="pub__title">{title}</h1>
+      </div>
+
+      <p class="pub__tagline">{tagline}</p>
+      {authors?.length ? (
+        <div class="authors authors--compact">
+          <span class="authors__label">Authors:</span>
+          {authors.map((a) => (
+            <span class={`author ${a === PUB_NAME? "author--me" : ""}`}>
+              {a}
+            </span>
+          ))}
+        </div>
+      ) : null}
+
+      <div class="pub__links">
+        {externalLink && (
+          <a class="btn btn--ghost" href={externalLink} target="_blank" rel="noreferrer">
+            {doiLabel}
+          </a>
+        )}
+
+        {hasPdf && (
+          <a class="btn btn--ghost" href={src} target="_blank" rel="noreferrer">
+            {pdfLabel}
+          </a>
+        )}
+
+        {hasArtifact && (
+          <a class="btn btn--ghost" href={artifactLink} target="_blank" rel="noreferrer">
+            Artifact
+          </a>
+        )}
+      </div>
+
+      {hasVideo && (
+        <div class="pub__video">
+          <div class="embed" aria-label="Video">
+            <iframe
+              class="embed__frame"
+              src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+              title="Video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            />
+          </div>
+        </div>
+      )}
+
+      <div class="pub-abstract">
+				<slot />
+			</div>
+    </div>
+  </section>
+
+  <style>
+    .pub__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pub__title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+
+    .pub__badge {
+      flex: 0 0 auto;
+      border: 1px solid var(--border);
+      background: var(--soft);
+      color: #475569;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pub__tagline {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #475569;
+    }
+
+  .authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    align-items: center;
+    line-height: 1.2;
+  }
+
+  .authors__label {
+    font-size: 0.85rem;
+    opacity: 0.75;
+    margin-right: 0.15rem;
+    white-space: nowrap;
+  }
+
+  .author {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .author--me {
+    font-weight: 600;
+    border-color: color-mix(in srgb, currentColor 28%, transparent);
+    background: color-mix(in srgb, currentColor 7%, transparent);
+  }
+
+  .author a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .author a:hover {
+    text-decoration: underline;
+  }
+
+  /* Compact variant for long lists */
+  .authors--compact .author {
+    font-size: 0.85rem;
+    padding: 0.1rem 0.45rem;
+  }
+
+    .pub__links {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pub__video {
+      margin-top: 16px;
+    }
+
+    .embed {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #000;
+      box-shadow: var(--shadow);
+    }
+
+    .embed__frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      display: block;
+    }
+
+    /* Publication abstract */
+.pub-abstract {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-left: 2px solid color-mix(in srgb, currentColor 16%, transparent);
+  background: color-mix(in srgb, currentColor 4%, transparent);
+  border-radius: 0.75rem;
+
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, currentColor 82%, transparent);
+}
+
+/* Ensure consistent spacing for MDX-rendered paragraphs inside */
+.pub-abstract :where(p) {
+  margin: 0;
+}
+
+.pub-abstract :where(p + p) {
+  margin-top: 0.6rem;
+}
+
+/* Optional: clamp abstracts on listing pages */
+.pub-abstract--clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5; /* adjust */
+  overflow: hidden;
+}
+
+  </style>
+</PageLayout>

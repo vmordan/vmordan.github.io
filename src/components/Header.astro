@@ -1,0 +1,206 @@
+---
+import HeaderPages from './HeaderPages.astro';
+import SocialLinks from './SocialLinks.astro';
+---
+
+<script>
+  const toggle = document.querySelector('.menu-toggle');
+  const menu = document.querySelector('#mobile-menu');
+
+  toggle?.addEventListener('click', () => {
+    if (!menu) return;
+
+    const isOpen = !menu.hasAttribute('hidden');
+    if (isOpen) menu.setAttribute('hidden', '');
+    else menu.removeAttribute('hidden');
+
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+  });
+</script>
+
+<header class="site-header">
+  <nav class="topbar" aria-label="Primary">
+    <!-- Left: brand / title (optional) 
+    <a class="brand" href="/" aria-label="Home">
+      <span class="brand__dot" aria-hidden="true"></span>
+      <span class="brand__text">Home</span>
+    </a>-->
+
+    <!-- Desktop pages -->
+    <div class="navlinks navlinks--desktop">
+      <HeaderPages />
+    </div>
+
+    <!-- Right: socials + mobile toggle -->
+    <div class="right">
+      <SocialLinks hideOnMobile />
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        ☰
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile panel -->
+  <div id="mobile-menu" class="mobile-panel" hidden>
+    <div class="navlinks navlinks--mobile">
+      <HeaderPages />
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Reuse the same knobs as the main page */
+  :global(:root) {
+    --bg: #ffffff;
+    --fg: #0f172a;
+    --muted: #475569;
+    --border: #e2e8f0;
+    --soft: #f8fafc;
+    --shadow: 0 1px 10px rgba(15, 23, 42, 0.06);
+    --radius: 18px;
+    --accent: #2f6fed;
+  }
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.65);
+  }
+
+  .topbar {
+    max-width: var(--page-w, 1100px);
+    margin: 0 auto;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  /* Brand */
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--fg);
+    white-space: nowrap;
+  }
+  .brand__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(47, 111, 237, 0.12);
+  }
+  .brand__text {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+  }
+
+  /* Desktop nav container */
+  .navlinks--desktop {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Right side */
+  .right {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Make HeaderPages links look like chips */
+  :global(.navlinks a) {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    background: #fff;
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 650;
+    text-decoration: none;
+    color: #334155;
+    transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+  }
+
+  :global(.navlinks a:hover) {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+  }
+
+  /* If your theme uses `.active` on current page links */
+  :global(.navlinks a.active) {
+    border-color: rgba(47, 111, 237, 0.35);
+    box-shadow: 0 0 0 3px rgba(47, 111, 237, 0.12);
+    color: var(--fg);
+  }
+
+  /* Mobile toggle */
+  .menu-toggle {
+    display: none;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 10px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: #334155;
+  }
+  .menu-toggle:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+
+  /* Mobile dropdown panel */
+  .mobile-panel {
+    max-width: var(--page-w, 1100px);
+    margin: 0 auto 10px;
+    padding: 0 16px 12px;
+  }
+
+  .navlinks--mobile {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 10px;
+    display: grid;
+    gap: 8px;
+  }
+
+  :global(.navlinks--mobile a) {
+    width: 100%;
+    justify-content: space-between;
+    border-radius: 14px; /* more "panel-like" for mobile */
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  /* Breakpoints */
+  @media (max-width: 400px) {
+    .navlinks--desktop {
+      display: none;
+    }
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+</style>

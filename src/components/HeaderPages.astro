@@ -1,0 +1,34 @@
+---
+import HeaderLink from './HeaderLink.astro';
+import LanguageBasedContent from "./LanguageBasedContent.svelte";
+---
+
+
+<HeaderLink href="/">
+    <div>Home</div>
+</HeaderLink>
+<HeaderLink href="/publication">
+    <div>Publications</div>
+</HeaderLink>
+<HeaderLink href="/project">
+    <div>Projects</div>
+</HeaderLink>
+<HeaderLink href="/talk">
+    <div>Talks</div>
+</HeaderLink>
+<HeaderLink href="/about">
+    <div>About</div>
+</HeaderLink>
+
+<style>
+	a {
+		padding: 0.5em 0.5em;
+		color: var(--black);
+		border-bottom: 4px solid transparent;
+		text-decoration: none;
+	}
+	a.active {
+		text-decoration: none;
+		border-bottom-color: var(--accent);
+	}
+</style>

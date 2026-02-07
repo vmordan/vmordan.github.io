@@ -1,0 +1,158 @@
+---
+import PageLayout from "../layouts/PageLayout.astro";
+import type { CollectionEntry } from "astro:content";
+
+type Props = CollectionEntry<"project">["data"];
+
+const { title, desc, link, role, status } = Astro.props as Props;
+
+const isCodeHost = (l?: string) =>
+  Boolean(l && (l.includes("github.com") || l.includes("gitlab.com") || l.includes("codeberg.org")));
+
+const linkLabel = isCodeHost(link) ? "Code" : "Link";
+---
+
+<PageLayout title={title} description={desc}>
+  <section class="panel">
+    <div class="pub">
+      <div class="pub__head">
+        <div class="pub__headText">
+          <h1 class="pub__title">{title}</h1>
+
+          <div class="pub__badges">
+            {role && <span class="role-badge">{role}</span>}
+            {status && <span class={`status-badge status-badge--${status.toLowerCase()}`}>{status}</span>}
+          </div>
+        </div>
+      </div>
+
+      <p class="pub__tagline">{desc}</p>
+
+      <div class="pub__links">
+        {link && (
+          <a class="btn btn--ghost" href={link} target="_blank" rel="noreferrer">
+            {linkLabel}
+          </a>
+        )}
+      </div>
+
+      <div class="pub-abstract">
+        <slot />
+      </div>
+    </div>
+  </section>
+
+  <style>
+    .pub__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .pub__headText {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .pub__title {
+      margin: 0;
+      font-size: 18px;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+
+    .pub__badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Role badge: informative + slightly prominent */
+    .role-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: color-mix(in srgb, currentColor 88%, transparent);
+      background: color-mix(in srgb, currentColor 6%, transparent);
+      border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+      border-radius: 999px;
+      padding: 6px 10px;
+      line-height: 1.2;
+      white-space: normal;
+      max-width: 100%;
+    }
+
+    /* Status badge: smaller + "system-like" */
+    .status-badge {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      border-radius: 999px;
+      padding: 5px 9px;
+      line-height: 1.2;
+      border: 1px solid #e2e8f0;
+      background: #f1f5f9;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    /* Subtle variations (no loud colors) */
+    .status-badge--active {
+      background: color-mix(in srgb, currentColor 6%, transparent);
+      border-color: color-mix(in srgb, currentColor 14%, transparent);
+    }
+
+    .status-badge--finished {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      color: #334155;
+    }
+
+    .status-badge--archived {
+      background: #f1f5f9;
+      border-color: #e2e8f0;
+      color: #64748b;
+    }
+
+    .pub__tagline {
+      margin: 10px 0 0;
+      font-size: 14px;
+      line-height: 1.55;
+      color: #475569;
+    }
+
+    .pub__links {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pub-abstract {
+      margin-top: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      border-left: 2px solid color-mix(in srgb, currentColor 16%, transparent);
+      background: color-mix(in srgb, currentColor 4%, transparent);
+      border-radius: 0.75rem;
+
+      font-size: 0.95rem;
+      line-height: 1.55;
+      color: color-mix(in srgb, currentColor 82%, transparent);
+    }
+
+    .pub-abstract:empty {
+      display: none;
+    }
+
+    .pub-abstract :where(p) {
+      margin: 0;
+    }
+
+    .pub-abstract :where(p + p) {
+      margin-top: 0.6rem;
+    }
+  </style>
+</PageLayout>
