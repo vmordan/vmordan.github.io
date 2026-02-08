@@ -203,8 +203,8 @@ hr {
   --accent: #2f6fed;
 
   /* Layout knobs */
-  --page-w: 1100px;     /* desktop max container */
-  --mobile-w: 420px;    /* cap width on mobile/tablet */
+  --page-w: 90%;     /* desktop max container */
+  --mobile-w: 100%;    /* cap width on mobile/tablet */
   --aside-w: 320px;     /* sidebar width on desktop */
   --gap: 16px;
 }
@@ -224,40 +224,20 @@ hr {
   align-items: start;
 }
 
-@media (min-width: 900px) {
+  @media (min-width: 900px) {
   .layout {
-    /* Key fix: minmax(0,1fr) makes the 2nd column truly fluid */
     grid-template-columns: var(--aside-w) minmax(0, 1fr);
     gap: 20px;
-  }
-
-  .panel--aside {
-    width: var(--aside-w); /* ensures no shrinking weirdness */
-    position: sticky;
-    top: 18px;
   }
 
   /* Optional: prevent long content from forcing overflow */
   .main {
     min-width: 0;
   }
-}
-
-
-/* On smaller screens, center content and cap width for readability */
-@media (max-width: 900px) {
-  .page {
-    max-width: var(--mobile-w);
-  }
-}
-
-/* On desktop, use full available width but don’t exceed page-w */
-@media (min-width: 901px) {
   .page {
     max-width: var(--page-w);
   }
 }
-
   .panel {
     border: 1px solid var(--border);
     background: var(--bg);
@@ -283,6 +263,20 @@ hr {
     font-size: 12px;
     color: #64748b;
   }
+
+/* On smaller screens, center content and cap width for readability */
+@media (max-width: 900px) {
+  .page {
+    max-width: var(--mobile-w);
+  }
+}
+
+/* On desktop, use full available width but don’t exceed page-w */
+@media (min-width: 901px) {
+  .page {
+    max-width: var(--page-w);
+  }
+}
 
   .stack {
     margin-top: 14px;
@@ -377,7 +371,6 @@ hr {
   .main {
     display: grid;
     gap: var(--gap);
-    padding: 0px 32px ;
   }
 
   .chips {
@@ -421,6 +414,9 @@ hr {
   @media (min-width: 640px) {
     .cards {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .layout {
+      max-width: 100%;
     }
   }
 

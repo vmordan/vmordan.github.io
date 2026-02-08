@@ -144,7 +144,7 @@ const profile = {
 
   /* Layout knobs */
   --page-w: 90%;     /* desktop max container */
-  --mobile-w: 420px;    /* cap width on mobile/tablet */
+  --mobile-w: 100%;    /* cap width on mobile/tablet */
   --aside-w: 320px;     /* sidebar width on desktop */
   --gap: 16px;
 }
@@ -187,65 +187,6 @@ const profile = {
   grid-template-columns: 1fr; /* mobile: stacked */
   align-items: start;
 }
-
-@media (min-width: 900px) {
-  .layout {
-    /* Key fix: minmax(0,1fr) makes the 2nd column truly fluid */
-    grid-template-columns: var(--aside-w) minmax(0, 1fr);
-    gap: 20px;
-  }
-
-  .panel--aside {
-    width: var(--aside-w); /* ensures no shrinking weirdness */
-    position: sticky;
-    top: 18px;
-  }
-
-  /* Optional: prevent long content from forcing overflow */
-  .main {
-    min-width: 0;
-  }
-}
-
-
-/* On smaller screens, center content and cap width for readability */
-@media (max-width: 900px) {
-  .page {
-    max-width: var(--mobile-w);
-  }
-}
-
-/* On desktop, use full available width but don’t exceed page-w */
-@media (min-width: 901px) {
-  .page {
-    max-width: var(--page-w);
-  }
-}
-
-  .panel {
-    border: 1px solid var(--border);
-    background: var(--bg);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-  }
-
-  .panel__head {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .panel__title {
-    margin: 0;
-    font-size: 13px;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-    color: #0b1220;
-  }
-  .panel__hint {
-    margin: 6px 0 0;
-    font-size: 12px;
-    color: #64748b;
-  }
 
   .stack {
     margin-top: 14px;
@@ -335,11 +276,6 @@ const profile = {
   .btn--ghost:hover {
     background: #f1f5f9;
     border-color: #cbd5e1;
-  }
-
-  .main {
-    display: grid;
-    gap: var(--gap);
   }
 
   .chips {
@@ -444,25 +380,6 @@ const profile = {
     line-height: 1.5;
   }
 
-  .photos {
-    margin-top: 14px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
-
-  @media (min-width: 640px) {
-    .photos {
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-    }
-  }
-  .photo {
-    aspect-ratio: 1 / 1;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    background: var(--soft);
-  }
-
 .contact-list {
   list-style: none;
   padding: 0;
@@ -516,17 +433,6 @@ const profile = {
   text-decoration: underline;
 }
 
-
-
-
-
-
-
-
-
-
-
-
   .side-hero {
     grid-template-columns: auto 1fr;
     gap: 12px;
@@ -561,22 +467,6 @@ const profile = {
   display: block;
 }
 
-/* Tablet / small desktop */
-@media (max-width: 900px) {
-  .avatar {
-    width: 200px;
-    margin-bottom: 12px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 480px) {
-  .avatar {
-    width: 140px;
-    margin-bottom: 10px;
-    border-radius: 16px;
-  }
-}
 
 
   .side-hero__title {
@@ -619,13 +509,13 @@ const profile = {
     font-size: 11px;
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 400px) {
     .side-hero {
       grid-template-columns: 1fr;
     }
     .avatar {
-      width: 64px;
-      height: 64px;
+      width: 128px;
+      height: 128px;
     }
   }
 </style>
