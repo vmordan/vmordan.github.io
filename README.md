@@ -6,7 +6,7 @@ It is designed to be easily configurable via a small set of config files, while 
 
 ## Getting Started
 
-Follow these steps to customize the template for your own site.
+Follow these steps to customize the template for your own site (use branch `template`).
 
 
 ## 1. Fill in personal data
