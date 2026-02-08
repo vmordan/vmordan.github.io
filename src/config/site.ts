@@ -1,17 +1,23 @@
 // Here we define all personal text for pages.
 
 export const HOME_PAGE_INTRO = [
-  "Short intro."
+  "Researcher and engineer working on program verification, testing, visualization, and developer-facing workflows."
 ];
 
 export const HOME_PAGE_OUTSIDE_WORK = [
-  "Outside work intro."
+  "Calm, nature-focused travel - 30+ countries. Hiking with wide open views, snorkeling, kayaking, and exploring remote landscapes."
 ];
 
 export const HOME_PAGE_OUTSIDE_WORK_CHIPS = [
-    "outside work activities",
+    "hiking",
+    "snorkeling",
+    "mountains",
+    "islands",
+    "hidden gems"
 ];
 
 export const ABOUT_BIO = [
-  "Short bio"
-]
+  "I hold a PhD in Computer Science and work at the intersection of software verification and full-stack engineering. My focus is on bridging academic research with real-world practice by applying static analysis, model checking, and testing techniques to complex software systems, including operating systems and large-scale codebases.",
+  "A significant part of my work is dedicated to visualization and web development, making verification results and technical data more accessible, interpretable, and useful for engineers and researchers alike.",
+  "Outside of work, I’m a passionate traveler - I’ve visited 30+ countries, with a strong preference for calm, less-touristy places: mountains, lakes, remote islands, and snorkeling spots. I’m always drawn to quiet landscapes and hidden gems rather than crowded destinations."
+];

@@ -1,0 +1,14 @@
+---
+title: "Checking several requirements at once by CEGAR"
+tagline: "Programming and Computing Software, Volume 42, Issue 4"
+link: "https://doi.org/10.1134/S0361768816040058"
+order: 4
+src: "/pubs/mav_extended.pdf"
+authors:
+  - "V. Mordan"
+  - "V. Mutilin"
+---
+
+Currently, static verifiers based on counterexample-guided abstraction refinement (CEGAR) can prove the correctness of a program with respect to a specified requirement, detect its violation, and then stop the analysis, or exhaust the available resources without producing a useful result. In principle, this approach could be used to check several requirements at once; however, detecting the first violation of a requirement or exhausting resources allocated to one requirement prevents further checking of the program against the remaining requirements. Moreover, if a program contains multiple violations of the same requirement, CEGAR typically finds only the first one and may miss other potential errors.
+
+At the same time, static verifiers perform similar actions when checking the same program against different requirements, which leads to significant waste of computational resources. This paper presents a new CEGAR-based method for static software verification aimed at checking programs against several requirements simultaneously while producing the same results as the standard CEGAR approach that checks requirements one by one. To achieve this, the proposed method distributes verification resources among requirements and continues the analysis after detecting a violation of a requirement. Experiments conducted on Linux kernel modules show that the implementation of the proposed method reduced the total verification time by a factor of five. The total number of divergent results compared to the base CEGAR approach was about 2 percent. By continuing the analysis after detecting the first violation, the proposed method guarantees that all violations of the given requirements are found in 40 percent of cases, with the total number of violations detected being 1.5 times higher than with the base CEGAR approach.

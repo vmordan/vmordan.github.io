@@ -1,0 +1,19 @@
+---
+title: "On-the-fly decomposition of specifications in software model checking"
+tagline: "FSE 2016 conference paper"
+link: "https://doi.org/10.1145/2950290.2950349"
+order: 5
+src: "/pubs/mpv.pdf"
+authors:
+  - "S. Apel"
+  - "D. Beyer"
+  - "V. Mordan"
+  - "V. Mutilin"
+  - "A. Stahlbauer"
+---
+
+Major breakthroughs have significantly increased the efficiency and effectiveness of software model checking, making this technology applicable to industrial-scale software. However, verifying a full formal specification of a software system is still considered too complex. In practice, sets of properties are therefore verified one by one and in isolation.
+
+This paper proposes an approach that takes a full formal specification as input and initially attempts to verify all properties simultaneously in a single verification run. The verification algorithm monitors its own progress and detects situations in which the full set of properties becomes too complex. In such cases, it automatically decomposes the full set of properties into smaller subsets and continues the verification seamlessly. To avoid state-space explosion for large property sets, the approach introduces on-the-fly property weaving, in which properties are integrated into the program’s transition system dynamically during the analysis. The selection of properties to weave and verify is determined adaptively during the verification process.
+
+An extensive evaluation is performed using verification tasks derived from 4,336 Linux kernel modules and a set of properties that define correct usage of the Linux API. The results show that checking several properties simultaneously can lead to significant performance improvements, as abstract models share many components across different properties.

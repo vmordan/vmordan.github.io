@@ -1,0 +1,14 @@
+---
+title: "Checking several requirements at once by CEGAR"
+tagline: "PSI 2015 conference paper"
+link: "https://doi.org/10.1007/978-3-319-41579-6_17"
+order: 3
+src: "/pubs/mav_psi.pdf"
+authors:
+  - "V. Mordan"
+  - "V. Mutilin"
+---
+
+At present, static verifiers based on Counterexample-Guided Abstraction Refinement (CEGAR) can prove the correctness of a program with respect to a specified requirement, detect a violation of that requirement, and then stop the analysis, or exhaust the available resources without producing a useful result. When this approach is applied to checking several requirements at once, detecting the first violation of a requirement or exhausting resources for one requirement prevents further checking of the program against the remaining requirements. As a result, violations of some requirements may be missed. For this reason, in practice each requirement is usually checked separately.
+
+However, static verifiers perform similar actions when checking the same program against different requirements, which leads to significant waste of computational resources. This paper presents a new CEGAR-based method for static software verification that is aimed at checking programs against several requirements simultaneously while producing the same results as the standard CEGAR approach, which checks requirements one by one. To achieve this, the proposed method divides verification resources equally among requirements and continues the analysis after detecting a violation of a requirement by excluding that requirement from further consideration. Experiments conducted on Linux kernel modules show that the implementation of the proposed method reduced the total verification time by a factor of five. The total number of divergent results compared to standard CEGAR was about 2 percent.

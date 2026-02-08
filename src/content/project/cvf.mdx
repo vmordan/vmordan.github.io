@@ -1,0 +1,21 @@
+---
+title: "Continuous Verification Framework"
+order: 5
+desc: Infrastructure for decomposing software systems into verification tasks and solving them using CPAchecker.
+role: Author & maintainer
+link: https://github.com/ispras/cv-launcher
+status: Finished
+---
+
+The **Continuous Verification Framework** is a purpose-built infrastructure
+for preparing and solving verification tasks for a given software system.
+It focuses on systematic **decomposition of verification problems**
+and automated execution using **CPAchecker** as the underlying analysis engine.
+
+In contrast to more generic and complex frameworks such as **Klever**,
+this framework was intentionally kept minimal and specialized,
+covering exactly the functionality required in practice.
+
+It was applied to multiple real-time and operating system–level projects,
+where static verification was used to detect rare and hard-to-reproduce bugs
+in proprietary code bases.

@@ -1,0 +1,14 @@
+---
+title: "Thesis: Methods for Program Verification Based on the Composition of Reachability Tasks"
+tagline: "Full Thesis Text (in Russian)"
+order: 1
+src: "/pubs/thesis.pdf"
+authors:
+  - "V. Mordan"
+---
+
+Software reliability is a critical concern in modern society, as software systems are increasingly complex and widely used in safety- and mission-critical domains. One prominent example of such software is the Linux operating system kernel, which consists of tens of millions of lines of code, evolves rapidly, and is developed by thousands of contributors. Errors in kernel modules can lead to severe system failures, making their verification an important and challenging task.
+
+Static software verification aims to prove the correctness of programs by analyzing all possible execution paths without executing the code. While model checking–based verification techniques have achieved significant progress, the general verification problem remains undecidable and resource-intensive in practice. In real-world scenarios, programs are required to satisfy a large number of specific functional and non-functional requirements. Verifying these requirements individually using sequential reachability analysis leads to redundant computations and inefficient use of verification resources.
+
+This thesis investigates methods for program verification based on the composition of reachability tasks. It addresses the problem of verifying multiple requirements simultaneously and overcoming limitations of traditional verification approaches that stop after detecting the first violation. The proposed methods improve verification efficiency by reusing intermediate results and reducing redundant analysis steps. The applicability and effectiveness of the developed approaches are demonstrated using Linux kernel modules, showing that requirement composition is a promising direction for scalable and efficient static verification.

@@ -1,0 +1,14 @@
+---
+title: "Minimizing the number of static verifier traces to reduce time for finding bugs in Linux kernel modules"
+tagline: "Proceedings of SYRCoSE 2014"
+link: "https://doi.org/10.15514/SYRCOSE-2014-8-5"
+order: 2
+src: "/pubs/mea.pdf"
+authors:
+  - "V. Mordan"
+  - "E. Novikov"
+---
+
+Static verifiers often stop after detecting the first bug in a program. This behavior slows down the process of finding and fixing multiple bugs of the same kind in a Linux kernel module. To address this issue, we used the static verifier CPAchecker with an option that allows the analysis to continue after the first bug is found. We also extended LDV Tools, a toolset for the verification of Linux kernel modules, to detect multiple violations of a given rule specification within the same module.
+
+However, initial experiments revealed a new problem: the verifier produced too many similar traces. This paper introduces a formal definition of equivalent traces and presents several trace comparison algorithms, as well as a semi-automated approach that makes it possible to identify multiple bugs in a Linux kernel module against a given rule specification in a single verification run.
