@@ -35,7 +35,7 @@ const project = defineCollection({
   schema: z.object({
     title: z.string(),
     desc: z.string(),
-    link: z.string().url(),
+    link: z.string().url().optional(),
     order: z.number().int(),
     role: z.string(),
     status: z.enum(["Active", "Finished", "Archived"]),
