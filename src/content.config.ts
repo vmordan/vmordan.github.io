@@ -38,7 +38,7 @@ const project = defineCollection({
     link: z.string().url().optional(),
     order: z.number().int(),
     role: z.string(),
-    status: z.enum(["Active", "Finished", "Archived"]),
+    status: z.enum(["Active", "Finished", "Archived"]).optional(),
     hide: z.boolean().optional().default(false),
   }),
 });
