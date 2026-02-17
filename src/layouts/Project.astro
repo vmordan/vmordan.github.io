@@ -1,4 +1,5 @@
 ---
+import { NAME_CODE, NAME_LINK } from "../config/control";
 import PageLayout from "../layouts/PageLayout.astro";
 import type { CollectionEntry } from "astro:content";
 
@@ -9,7 +10,7 @@ const { title, desc, link, role, status } = Astro.props as Props;
 const isCodeHost = (l?: string) =>
   Boolean(l && (l.includes("github.com") || l.includes("gitlab.com") || l.includes("codeberg.org")));
 
-const linkLabel = isCodeHost(link) ? "Code" : "Link";
+const linkLabel = isCodeHost(link) ? NAME_CODE : NAME_LINK;
 ---
 
 <PageLayout title={title} description={desc}>

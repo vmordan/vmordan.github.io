@@ -1,6 +1,7 @@
 ---
 import SocialLinks from "./SocialLinks.astro";
 import { FULL_NAME, EMAIL } from '../config/profile';
+import { NAME_ABOUT, NAME_CONTACT, NAME_PROJECTS, NAME_PUBLICATIONS } from "../config/control";
 
 const year = new Date().getFullYear();
 ---
@@ -12,10 +13,10 @@ const year = new Date().getFullYear();
     </p>
 
     <nav class="footer-nav" aria-label="Footer">
-      <a href="/about">About</a>
-      <a href="/project">Projects</a>
-      <a href="/publication">Publications</a>
-      <a href={`mailto:${EMAIL}`}>Contact</a>
+      <a href="/about">{NAME_ABOUT}</a>
+      <a href="/project">{NAME_PROJECTS}</a>
+      <a href="/publication">{NAME_PUBLICATIONS}</a>
+      <a href={`mailto:${EMAIL}`}>{NAME_CONTACT}</a>
     </nav>
 
     <div class="footer-social">

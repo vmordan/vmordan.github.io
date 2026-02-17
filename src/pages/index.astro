@@ -2,7 +2,10 @@
 import PageLayout from "../layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
 import { FULL_NAME } from '../config/profile';
-import { HOME_PAGE_INTRO, HOME_PAGE_OUTSIDE_WORK, HOME_PAGE_OUTSIDE_WORK_CHIPS } from '../config/site';
+import { DESC_HOME, HOME_PAGE_INTRO, HOME_PAGE_OUTSIDE_WORK, HOME_PAGE_OUTSIDE_WORK_CHIPS } from '../config/site';
+import { NAME_SELECTED_PUBLICATIONS, NAME_VIEW_ALL } from "../config/control";
+import { NAME_SELECTED_PROJECTS } from "../config/control";
+import { NAME_OUTSIDE_WORK } from "../config/control";
 
 function takeTwoNewest(items) {
   return [...items].sort((a, b) => {
@@ -48,7 +51,7 @@ const projCards = toCards(proj2, "/project");
 
 <PageLayout
   title=`${FULL_NAME}`
-  description=`Personal site of ${FULL_NAME}`
+  description={DESC_HOME}
 >
   {/* Optional one-liner positioning line (not a bio) */}
   <section class="hero">
@@ -57,8 +60,8 @@ const projCards = toCards(proj2, "/project");
   <section class="grid">
     <section class="panel">
       <div class="row">
-        <h2 class="panel__title">Selected publications</h2>
-        <a class="row__link" href="/publication">View all</a>
+        <h2 class="panel__title">{NAME_SELECTED_PUBLICATIONS}</h2>
+        <a class="row__link" href="/publication">{NAME_VIEW_ALL}</a>
       </div>
 
       <div class="cards">
@@ -111,8 +114,8 @@ const projCards = toCards(proj2, "/project");
 
     <section class="panel">
       <div class="row">
-        <h2 class="panel__title">Selected projects</h2>
-        <a class="row__link" href="/project">View all</a>
+        <h2 class="panel__title">{NAME_SELECTED_PROJECTS}</h2>
+        <a class="row__link" href="/project">{NAME_VIEW_ALL}</a>
       </div>
 
       <div class="cards">
@@ -137,7 +140,7 @@ const projCards = toCards(proj2, "/project");
 
     <section class="panel panel--travel">
       <div class="row">
-        <h2 class="panel__title">Outside work</h2>
+        <h2 class="panel__title">{NAME_OUTSIDE_WORK}</h2>
       </div>
 
       {HOME_PAGE_OUTSIDE_WORK.map(p => <p class="text">{p}</p>)}

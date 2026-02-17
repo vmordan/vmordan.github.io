@@ -2,6 +2,8 @@
 import PageLayout from "../../layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
 import { FULL_NAME } from '../../config/profile';
+import { NAME_DETAILS, NAME_DOI, NAME_ITEMS, NAME_LINK, NAME_PDF, NAME_TALKS } from "../../config/control";
+import { DESC_TALKS } from "../../config/site";
 
 const talksRaw = await getCollection("talk");
 
@@ -33,13 +35,13 @@ const formatDate = (iso?: string) => {
 ---
 
 <PageLayout
-  title=`Talks - ${FULL_NAME}`
-  description="Selected talks and related materials (PDFs, links, videos)."
+  title=`${NAME_TALKS} - ${FULL_NAME}`
+  description={DESC_TALKS}
 >
   <section class="panel">
     <div class="row">
-      <h1 class="panel__title">Talks</h1>
-      <span class="row__hint">{talks.length} items</span>
+      <h1 class="panel__title">{NAME_TALKS}</h1>
+      <span class="row__hint">{talks.length} {NAME_ITEMS}</span>
     </div>
 
     <div class="pub-grid">
@@ -59,7 +61,7 @@ const formatDate = (iso?: string) => {
                 </a>
 
                 <div class="pub-card__badges">
-                  {hasPdf && <span class="tag tag--soft">PDF</span>}
+                  {hasPdf && <span class="tag tag--soft">{NAME_PDF}</span>}
                 </div>
               </div>
 
@@ -75,18 +77,18 @@ const formatDate = (iso?: string) => {
 
             <div class="pub-card__actions">
               <a class="btn btn--ghost" href={`/talk/${t.id}`}>
-                Details
+                {NAME_DETAILS}
               </a>
 
               {link && (
                 <a class="btn btn--ghost" href={link} target="_blank" rel="noreferrer">
-                  {isDoiLike(t.data.link ?? "") || link.includes("doi.org") ? "DOI" : "Link"}
+                  {isDoiLike(t.data.link ?? "") || link.includes("doi.org") ? NAME_DOI : NAME_LINK}
                 </a>
               )}
 
               {hasPdf && (
                 <a class="btn btn--ghost" href={t.data.src} target="_blank" rel="noreferrer">
-                  PDF
+                  {NAME_PDF}
                 </a>
               )}
 
