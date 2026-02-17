@@ -6,6 +6,8 @@ import orcidIcon from "../assets/icons/orcid.svg";
 import emailIcon from "../assets/icons/email.svg";
 import githubIcon from "../assets/icons/github.svg";
 import googleScholarIcon from "../assets/icons/google_scholar.svg";
+import { NAME_ABOUT, NAME_EMAIL, NAME_GITHUB, NAME_LINKEDIN, NAME_ORCID, NAME_PROJECTS, NAME_PUBLICATIONS, NAME_SCHOLAR } from "../config/control";
+import { NAME_LINKS } from "../config/control";
 
 const profile = {
   name: FULL_NAME,
@@ -15,37 +17,37 @@ const profile = {
   contacts: [
     {
       type: "email",
-      label: "Email",
+      label: NAME_EMAIL,
       value: EMAIL,
       href: `mailto:${EMAIL}`,
     },
     {
       type: "github",
-      label: "GitHub",
+      label: NAME_GITHUB,
       href: GITHUB,
     },
     {
       type: "scholar",
-      label: "Google Scholar",
+      label: NAME_SCHOLAR,
       href: GOOGLE_SCHOLAR,
     },
     {
       type: "orcid",
-      label: "ORCID",
+      label: NAME_ORCID,
       href: ORCID,
     },
     {
       type: "linkedin",
-      label: "LinkedIn",
+      label: NAME_LINKEDIN,
       href: LINKEDIN,
     },
   ],
   chips: CHIPS,
   photoAlt: `avatar`,
   ctas: [
-    { label: "Publications", href: "/publication" },
-    { label: "Projects", href: "/project" },
-    { label: "About", href: "/about" },
+    { label: NAME_PUBLICATIONS, href: "/publication" },
+    { label: NAME_PROJECTS, href: "/project" },
+    { label: NAME_ABOUT, href: "/about" },
   ],
 };
 ---
@@ -84,32 +86,32 @@ const profile = {
   <!-- INFO -->
   <div class="panel__head">
     <div>
-      <h2 class="panel__title">Useful links</h2>
+      <h2 class="panel__title">{NAME_LINKS}</h2>
     </div>
   </div>
 
   <div class="stack">
     <div class="mini">
-      <div class="mini__label">Links</div>
+      <!-- <div class="mini__label">Links</div>-->
       <ul class="contact-list">
         {profile.contacts.map((c) => ( c.href &&
           <li>
             <a class="contact-link" href={c.href} target="_blank" rel="noreferrer">
               <span class="contact-icon">
                 {c.type === "email" && (
-                  <Image src={emailIcon} alt="Instagram" class="icon" loading="eager" />
+                  <Image src={emailIcon} alt="email" class="icon" loading="eager" />
                 )}
                 {c.type === "github" && (
-                  <Image src={githubIcon} alt="Instagram" class="icon" loading="eager" />
+                  <Image src={githubIcon} alt="GitHub" class="icon" loading="eager" />
                 )}
                 {c.type === "scholar" && (
-                  <Image src={googleScholarIcon} alt="Instagram" class="icon" loading="eager" />
+                  <Image src={googleScholarIcon} alt="google scholar" class="icon" loading="eager" />
                 )}
                 {c.type === "orcid" && (
-                  <Image src={orcidIcon} alt="Instagram" class="icon" loading="eager" />
+                  <Image src={orcidIcon} alt="ORCID" class="icon" loading="eager" />
                 )}
                 {c.type === "linkedin" && (
-                  <Image src={linkedInIcon} alt="Instagram" class="icon" loading="eager" />
+                  <Image src={linkedInIcon} alt="LinkedIn" class="icon" loading="eager" />
                 )}
               </span>
               <span class="contact-label">{c.label}</span>

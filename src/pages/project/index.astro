@@ -2,6 +2,8 @@
 import PageLayout from "../../layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
 import { FULL_NAME } from '../../config/profile';
+import { DESC_PROJECTS } from "../../config/site";
+import { NAME_CODE, NAME_DETAILS, NAME_ITEMS, NAME_LINK, NAME_PROJECTS } from "../../config/control";
 
 const projectsRaw = await getCollection("project");
 
@@ -20,17 +22,17 @@ const projects = projectsRaw
 const isCodeHost = (l?: string) =>
   Boolean(l && (l.includes("github.com") || l.includes("gitlab.com") || l.includes("codeberg.org")));
 
-const linkLabel = (l?: string) => (isCodeHost(l) ? "Code" : "Link");
+const linkLabel = (l?: string) => (isCodeHost(l) ? NAME_CODE : NAME_LINK);
 ---
 
 <PageLayout
-  title=`Projects - ${FULL_NAME}`
-  description="Tools and contributions (selected projects with links to repositories and materials)."
+  title=`${NAME_PROJECTS} - ${FULL_NAME}`
+  description={DESC_PROJECTS}
 >
   <section class="panel">
     <div class="row">
-      <h1 class="panel__title">Projects</h1>
-      <span class="row__hint">{projects.length} items</span>
+      <h1 class="panel__title">{NAME_PROJECTS}</h1>
+      <span class="row__hint">{projects.length} {NAME_ITEMS}</span>
     </div>
 
     <div class="pub-grid">
@@ -63,7 +65,7 @@ const linkLabel = (l?: string) => (isCodeHost(l) ? "Code" : "Link");
 
             <div class="pub-card__actions">
               <a class="btn btn--ghost" href={`/project/${p.id}`}>
-                Details
+                {NAME_DETAILS}
               </a>
 
               {ext && (

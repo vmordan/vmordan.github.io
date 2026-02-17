@@ -2,6 +2,12 @@
 import PageLayout from "../../layouts/PageLayout.astro";
 import { getCollection } from "astro:content";
 import { FULL_NAME } from '../../config/profile';
+import { NAME_ARTIFACT, NAME_ITEMS, NAME_PUBLICATIONS, NAME_VIDEO } from "../../config/control";
+import { DESC_PUBLICATIONS } from "../../config/site";
+import { NAME_DETAILS } from "../../config/control";
+import { NAME_DOI } from "../../config/control";
+import { NAME_LINK } from "../../config/control";
+import { NAME_PDF } from "../../config/control";
 
 const pubsRaw = await getCollection("publication");
 
@@ -21,13 +27,13 @@ const normalizeLink = (link: string) =>
 ---
 
 <PageLayout
-  title=`Publications - ${FULL_NAME}`
-  description="Selected publications and related materials (PDFs, links, videos)."
+  title=`${NAME_PUBLICATIONS} - ${FULL_NAME}`
+  description={DESC_PUBLICATIONS}
 >
   <section class="panel">
     <div class="row">
-      <h1 class="panel__title">Publications</h1>
-      <span class="row__hint">{pubs.length} items</span>
+      <h1 class="panel__title">{NAME_PUBLICATIONS}</h1>
+      <span class="row__hint">{pubs.length} {NAME_ITEMS}</span>
     </div>
 
     <div class="pub-grid">
@@ -45,7 +51,10 @@ const normalizeLink = (link: string) =>
                 </a>
 
                 <div class="pub-card__badges">
-                  {hasVideo && <span class="tag tag--soft">Video</span>}
+                  {hasVideo && <span class="tag tag--soft">{NAME_VIDEO}</span>}
+                </div>
+                <div class="pub-card__badges">
+                  {p.data.artifactLink && <span class="tag tag--soft">{NAME_ARTIFACT}</span>}
                 </div>
               </div>
 
@@ -53,22 +62,22 @@ const normalizeLink = (link: string) =>
             </div>
 
             <div class="pub-card__actions">
-              <a class="btn btn--ghost" href={`/publication/${p.id}`}>Details</a>
+              <a class="btn btn--ghost" href={`/publication/${p.id}`}>{NAME_DETAILS}</a>
 
               {link && (
                 <a class="btn btn--ghost" href={link} target="_blank" rel="noreferrer">
-                  {link.includes("doi.org") || p.data.link.startsWith("10.") ? "DOI" : "Link"}
+                  {link.includes("doi.org") || p.data.link.startsWith("10.") ? NAME_DOI : NAME_LINK}
                 </a>
               )}
 
               {hasPdf && (
                 <a class="btn btn--ghost" href={p.data.src} target="_blank" rel="noreferrer">
-                  PDF
+                  {NAME_PDF}
                 </a>
               )}
               {p.data.artifactLink && (
                 <a class="btn btn--ghost" href={p.data.artifactLink} target="_blank" rel="noreferrer">
-                  Artifact
+                  {NAME_ARTIFACT}
                 </a>
               )}
             </div>

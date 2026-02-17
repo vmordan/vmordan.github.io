@@ -1,23 +1,24 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import LanguageBasedContent from "./LanguageBasedContent.svelte";
+import { NAME_HOME, NAME_PUBLICATIONS, NAME_PROJECTS, NAME_TALKS, NAME_ABOUT } from '../config/control';
 ---
 
 
 <HeaderLink href="/">
-    <div>Home</div>
+    <div>{NAME_HOME}</div>
 </HeaderLink>
 <HeaderLink href="/publication">
-    <div>Publications</div>
+    <div>{NAME_PUBLICATIONS}</div>
 </HeaderLink>
 <HeaderLink href="/project">
-    <div>Projects</div>
+    <div>{NAME_PROJECTS}</div>
 </HeaderLink>
 <HeaderLink href="/talk">
-    <div>Talks</div>
+    <div>{NAME_TALKS}</div>
 </HeaderLink>
 <HeaderLink href="/about">
-    <div>About</div>
+    <div>{NAME_ABOUT}</div>
 </HeaderLink>
 
 <style>

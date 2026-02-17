@@ -2,13 +2,13 @@
 import PageLayout from "../layouts/PageLayout.astro";
 import type { CollectionEntry } from "astro:content";
 import { PUB_NAME } from '../config/profile';
+import { NAME_ARTIFACT, NAME_DOI, NAME_LINK, NAME_PDF, NAME_AUTHORS } from "../config/control";
 
 type Props = CollectionEntry<"publication">["data"];
 
 const { title, tagline, link, src, videoId, artifactLink, authors } = Astro.props as Props;
 
-const pdfLabel = "PDF";
-const doiLabel = link?.includes("doi.org") || link?.startsWith("10.") ? "DOI" : "Link";
+const doiLabel = link?.includes("doi.org") || link?.startsWith("10.") ? NAME_DOI : NAME_LINK;
 
 // Normalize DOI if user stored bare "10.xxxx/yyy"
 const externalLink =
@@ -29,7 +29,7 @@ const hasArtifact = Boolean(artifactLink);
       <p class="pub__tagline">{tagline}</p>
       {authors?.length ? (
         <div class="authors authors--compact">
-          <span class="authors__label">Authors:</span>
+          <span class="authors__label">{NAME_AUTHORS}:</span>
           {authors.map((a) => (
             <span class={`author ${a === PUB_NAME? "author--me" : ""}`}>
               {a}
@@ -47,13 +47,13 @@ const hasArtifact = Boolean(artifactLink);
 
         {hasPdf && (
           <a class="btn btn--ghost" href={src} target="_blank" rel="noreferrer">
-            {pdfLabel}
+            {NAME_PDF}
           </a>
         )}
 
         {hasArtifact && (
           <a class="btn btn--ghost" href={artifactLink} target="_blank" rel="noreferrer">
-            Artifact
+            {NAME_ARTIFACT}
           </a>
         )}
       </div>

@@ -2,7 +2,8 @@
 import PageLayout from "../layouts/PageLayout.astro";
 import { Image } from "astro:assets";
 import { FULL_NAME } from '../config/profile';
-import { ABOUT_BIO } from '../config/site';
+import { ABOUT_BIO, DESC_ABOUT } from '../config/site';
+import { NAME_ABOUT, NAME_PHOTO_GALLERY, NAME_PHOTO_GALLERY_DESC } from "../config/control";
 
 
 const photoModules = import.meta.glob(
@@ -37,15 +38,14 @@ const photos = Object.entries(photoModules)
   // Sort ONLY by numeric prefix
   .sort((a, b) => a.order - b.order);
 
-
 ---
 
 <PageLayout
-  title=`About - ${FULL_NAME}`
-  description="Short bio, interests, and a small photo gallery."
+  title=`${NAME_ABOUT} - ${FULL_NAME}`
+  description={DESC_ABOUT}
 >
   <section class="panel">
-    <h2 class="panel__title">About</h2>
+    <h2 class="panel__title">{NAME_ABOUT}</h2>
 
     <div class="about">
       <div class="about__text">
@@ -56,8 +56,8 @@ const photos = Object.entries(photoModules)
 
   <section class="panel itineraries">
     <div class="row">
-      <h2 class="panel__title">Photo gallery</h2>
-      <span class="row__hint">A small selection</span>
+      <h2 class="panel__title">{NAME_PHOTO_GALLERY}</h2>
+      <span class="row__hint">{NAME_PHOTO_GALLERY_DESC}</span>
     </div>
 
     <div class="itinerary-grid">
