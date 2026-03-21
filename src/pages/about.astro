@@ -13,29 +13,29 @@ const photoModules = import.meta.glob(
 
 
 const photos = Object.entries(photoModules)
-  .map(([path, mod]) => {
+  .flatMap(([path, mod]) => {
     const raw = path.split("/").pop() ?? "";
 
-    // Match: <num>_<name>.jpg
-    // 1 = numeric prefix (optional)
-    // 2 = name part
+    // Valid format: <num>_<name>.jpg|jpeg
     const match = raw.match(/^(\d+)_([^.]*)\.(jpg|jpeg)$/i);
+    if (!match) return [];
 
-    const order = match ? Number(match[1]) : Number.POSITIVE_INFINITY;
-    const name = match ? match[2] : raw.replace(/\.(jpg|jpeg)$/i, "");
+    const order = Number(match[1]);
+    const name = match[2];
 
     const caption = name
       .replace(/[-_]/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
-    return {
-      src: mod.default,
-      alt: caption,
-      caption,
-      order,
-    };
+    return [
+      {
+        src: mod.default,
+        alt: caption,
+        caption,
+        order,
+      },
+    ];
   })
-  // Sort ONLY by numeric prefix
   .sort((a, b) => a.order - b.order);
 
 ---
@@ -65,6 +65,7 @@ const photos = Object.entries(photoModules)
         <button
           class="itinerary-card"
           type="button"
+          data-index={i}
           data-src={p.src.src ?? p.src}
           data-alt={p.alt}
           aria-label={`Open image ${p.alt}`}
@@ -84,10 +85,6 @@ const photos = Object.entries(photoModules)
               decoding="async"
             />
           </div>
-
-          <!-- <div class="card-body">
-            <div class="card-title">{p.caption}</div>
-          </div>-->
         </button>
       ))}
     </div>
@@ -99,11 +96,19 @@ const photos = Object.entries(photoModules)
   const lightbox = document.getElementById("lightbox");
   const img = document.getElementById("lightbox-img");
   const caption = document.getElementById("lightbox-caption");
+  const cards = Array.from(document.querySelectorAll(".itinerary-card"));
+  const prevBtn = document.querySelector(".lightbox__nav--prev");
+  const nextBtn = document.querySelector(".lightbox__nav--next");
+  const content = document.querySelector(".lightbox__content");
 
-  document.addEventListener("click", (e) => {
-    const card = e.target.closest(".itinerary-card");
-    if (!card) return;
+  let currentIndex = -1;
 
+  const showImage = (index) => {
+    if (!cards.length) return;
+
+    currentIndex = (index + cards.length) % cards.length;
+
+    const card = cards[currentIndex];
     const src = card.dataset.src;
     const alt = card.dataset.alt || "";
 
@@ -113,19 +118,58 @@ const photos = Object.entries(photoModules)
 
     lightbox.removeAttribute("hidden");
     document.body.style.overflow = "hidden";
-  });
+  };
 
   const close = () => {
     lightbox.setAttribute("hidden", "");
     img.src = "";
+    img.alt = "";
+    caption.textContent = "";
     document.body.style.overflow = "";
+    currentIndex = -1;
   };
 
+  const nextImage = () => {
+    if (currentIndex >= 0) showImage(currentIndex + 1);
+  };
+
+  const prevImage = () => {
+    if (currentIndex >= 0) showImage(currentIndex - 1);
+  };
+
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".itinerary-card");
+    if (!card) return;
+
+    const index = Number(card.dataset.index);
+    showImage(index);
+  });
+
+  prevBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    prevImage();
+  });
+
+  nextBtn?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    nextImage();
+  });
+
+  content?.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+
   lightbox.addEventListener("click", close);
+
   document.addEventListener("keydown", (e) => {
+    if (lightbox.hasAttribute("hidden")) return;
+
     if (e.key === "Escape") close();
+    if (e.key === "ArrowRight") nextImage();
+    if (e.key === "ArrowLeft") prevImage();
   });
 </script>
+
 
 
   <style>
@@ -305,6 +349,61 @@ const photos = Object.entries(photoModules)
   display: none !important;
 }
 
+.lightbox__content {
+  position: relative;
+  max-width: min(92vw, 1200px);
+  max-height: 92vh;
+  margin: 0;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+}
+
+.lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  color: white;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+}
+
+.lightbox__nav:hover {
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.lightbox__nav--prev {
+  left: 8px;
+}
+
+.lightbox__nav--next {
+  right: 8px;
+}
+
+@media (max-width: 640px) {
+  .lightbox__nav {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+
+  .lightbox__nav--prev {
+    left: 8px;
+  }
+
+  .lightbox__nav--next {
+    right: 8px;
+  }
+}
 
   </style>
 
@@ -313,8 +412,16 @@ const photos = Object.entries(photoModules)
   <div class="lightbox__backdrop"></div>
 
   <figure class="lightbox__content">
+    <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous image">
+      ‹
+    </button>
+
     <img id="lightbox-img" alt="" />
     <figcaption id="lightbox-caption"></figcaption>
+
+    <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next image">
+      ›
+    </button>
   </figure>
 </div>
 </PageLayout>
